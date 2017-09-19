@@ -1,0 +1,16 @@
+<div class="jumbotron text-center">
+  <h2>Welcome to Rumbl.io!</h2>
+  <p class="lead">Rumble out loud.</p>
+</div>
+
+<div class="index-main row">
+  <%= if @current_user do %>
+    <div class="col-md-12 text-center">
+      <%= link "Show Users", to: user_path(@conn, :index), class: "btn btn-primary" %>
+
+      <%= link "Show Feeds", to: feed_path(@conn, :list), class: "btn btn-info" %>
+      
+      <%= link "User Videos", to: video_path(@conn, :list), class: "btn btn-success" %>
+    </div>
+  <% end %>
+</div>

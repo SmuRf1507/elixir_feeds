@@ -1,0 +1,19 @@
+<h2>Show feed</h2>
+
+<ul>
+
+  <li>
+    <strong>Url:</strong>
+    <%= @feed.url %>
+  </li>
+
+
+  <li>
+    <strong>Slug:</strong>
+    <%= @feed.slug %>
+  </li>
+
+</ul>
+
+<%= link "Edit", to: feed_path(@conn, :edit, @feed) %>
+<%= link "Back", to: feed_path(@conn, :index) %>

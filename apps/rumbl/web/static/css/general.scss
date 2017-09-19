@@ -1,0 +1,18 @@
+body{
+  padding: 15px;
+}
+a.logo{
+  background-image: url("/images/phoenix.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: left center;
+  height:50px;
+  width:100%;
+  display: inline-block;
+  margin-top:5px;
+  margin-left:5px;
+}
+
+.nav-container ul{
+  margin-top:10px;
+}

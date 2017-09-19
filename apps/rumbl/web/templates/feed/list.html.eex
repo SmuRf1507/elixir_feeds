@@ -1,0 +1,38 @@
+<h2>Listing feeds</h2>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Url</th>
+      <th>Slug</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for feed <- @feeds do %>
+    <tr>
+      <td><%= feed.url %></td>
+      <td><%= feed.slug %></td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<h2>Listing XML</h2>
+<div id="feed-collection-container">
+  <%= for xml <- @items do %>
+    <div class="feed-container">
+      <ul class="feed-list" data-feedId="<%= xml.id %>">
+        <%= for inner <- xml.items do %>
+          <li class="feed-entry" data-feedLink="<%= inner.link %>">
+            <a class="feed-title-link" href="<%= inner.link %>" target="_blank">
+              <%= inner.title %> - <%= inner.pubDate %>
+            </a><br />
+            <%= inner.description %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+</div>
