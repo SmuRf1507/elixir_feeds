@@ -33,5 +33,5 @@ Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 
 # Front End
 
-* Users can create Feeds, that are shared among all users and subscribe to a feed.
-* Subscribed Feeds display the latest items, and update accordingly.
+* Users can create Feeds, that are shared among all users and subscribe to feeds.
+* Subscribed Feeds display the latest items, and are live updated.
