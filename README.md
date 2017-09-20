@@ -15,7 +15,7 @@ Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 
 * Retrieve the latest items from a Feed
   ```
-  RssGrabber.getXML(url, [limit: limit])  
+  RssGrabber.getXML({id, url}, [limit: limit])  
   ```
 * Or get a list of Feeds containing the latest items
   ```
@@ -28,6 +28,7 @@ Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
     ```
     RssGrabber.start_feed_monitor(feed, opts)
     ```
+* Notifies Channel of updates, new item is broadcasted to a js socket
 
 
 # Front End
