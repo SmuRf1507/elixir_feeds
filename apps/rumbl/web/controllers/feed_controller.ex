@@ -17,9 +17,8 @@ defmodule Rumbl.FeedController do
   end
 
   def list(conn, _params, user) do
+    # get the users accociated feeds and their items
     u = get_user_feed_items(user)
-    #Logger.debug "Var user: #{inspect(curuser)}"
-    #xml = RssGrabber.getXMLbatch(create_url_list(feeds, []))
 
     render(conn, "list.html", feeds: u.feeds)
   end
@@ -37,12 +36,8 @@ defmodule Rumbl.FeedController do
     feed = Repo.get_by(Feed, url: feed_params["url"])
     if feed do
       # URL already on record, update user feed association
-      user_changeset = u
-                    |> Ecto.Changeset.change
-                    |> Ecto.Changeset.put_assoc(:feeds, u.feeds ++ [feed])
-
-      case Repo.update(user_changeset) do
-        {:ok, feed} ->
+      case save_new_user_feed_assoc(u, feed) do
+        {:ok, resp} ->
           conn
             |> put_flash(:info, "Feed successfully saved.")
             |> redirect(to: feed_path(conn, :index))
@@ -50,16 +45,15 @@ defmodule Rumbl.FeedController do
           render(conn, "new.html", changeset: changeset)
       end
     else
-      # check if feed returns valid results
+      # Feed not on record, check if feed returns valid results
       case get_latest_posts(feed_params["url"], 3) do
         {:ok, item_list} ->
-          # Feed is valid, it can be parsed
-          # Insert Feed and procceed to add items
-
-          # Feed not on record, create changeset for new feed
+          # Received valid result, create changeset for new feed
           feed_changeset = Feed.creation_changeset(%Feed{}, Map.put(feed_params, "user", u))
+          # Insert new feet into db
           case Repo.insert(feed_changeset) do
             {:ok, feed} ->
+              # After Feed is created, save all the returned results as LatestFeedItems
               case create_and_save_posts(item_list, feed) do
                 {:ok} ->
                   conn
@@ -77,7 +71,9 @@ defmodule Rumbl.FeedController do
   end
 
   def show(conn, %{"id" => id}, user) do
-    feed = Repo.get!(Feed, id)
+    #id = get_id_from_slug(i)
+    #id = String.to_integer(id)
+    feed = Repo.get!(Feed, id) |> Repo.preload(:latest_feed_item)
     render(conn, "show.html", feed: feed)
   end
 
@@ -170,9 +166,23 @@ defmodule Rumbl.FeedController do
       {:ok}
   end
 
-  
+  defp save_new_user_feed_assoc(user, feed) do
+    user_changeset = user
+                  |> Ecto.Changeset.change
+                  |> Ecto.Changeset.put_assoc(:feeds, user.feeds ++ [feed])
+
+    Repo.update(user_changeset)
+  end
+
+
   defp get_user_feed_items(user) do
     user |> Repo.preload([{:feeds, :latest_feed_item}])
+  end
+
+  defp get_id_from_slug(slug) do
+    s = to_string(slug)
+    "" <> id <> "-" <> rest = s
+    String.to_integer(id)
   end
 
 end

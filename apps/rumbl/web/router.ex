@@ -29,6 +29,7 @@ defmodule Rumbl.Router do
     pipe_through [:browser, :authenticate_user]
     resources "/videos", VideoController
     resources "/feeds", FeedController
+    get "/feeds/:id", FeedController, :show
   end
 
   scope "/feeds", Rumbl do

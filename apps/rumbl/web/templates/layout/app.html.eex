@@ -20,23 +20,39 @@
             </a>
           </div>
           <div class="nav-container col-md-6">
-            <ul class="list-inline text-right">
+            <ul class="list-inline text-right nav nav-pills">
               <%= if @current_user do %>
-                <li>
-                  <%= link @current_user.username, to: page_path(@conn, :index), class: "btn btn-default" %>
+                <li role="presentation">
+                  <%= link @current_user.username, to: page_path(@conn, :index), class: "" %>
                 </li>
-                <li>
-                  <%= link "My Feeds", to: feed_path(@conn, :index), class: "btn btn-info" %>
+                <li class="dropdown" role="presentation">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Feeds<span class="caret"></span></a>
+                  <ul class="dropdown-menu">
+                    <li>
+                      <%= link "Manage Feeds", to: feed_path(@conn, :index), class: "" %>
+                    </li>
+                    <li>
+                      <%= link "Latest News", to: feed_path(@conn, :list), class: "" %>
+                    </li>
+                  </ul>
                 </li>
-                <li>
-                  <%= link "My Videos", to: video_path(@conn, :index), class: "btn btn-success" %>
+                <li class="dropdown" role="presentation">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Videos<span class="caret"></span></a>
+                  <ul class="dropdown-menu">
+                    <li>
+                      <%= link "My Videos", to: video_path(@conn, :index), class: "" %>
+                    </li>
+                    <li>
+                      <%= link "User Videos", to: video_path(@conn, :list), class: "" %>
+                    </li>
+                  </ul>
                 </li>
-                <li>
+                <li role="presentation">
                   <%= link "Log out", to: session_path(@conn, :delete, @current_user), method: "delete", class: "btn btn-danger" %>
                 </li>
               <% else %>
-                <li><%= link "Register", to: user_path(@conn, :new) %></li>
-                <li><%= link "Log In", to: session_path(@conn, :new) %></li>
+                <li><%= link "Register", to: user_path(@conn, :new), class: "btn btn-success" %></li>
+                <li><%= link "Log In", to: session_path(@conn, :new), class: "btn btn-primary" %></li>
               <% end %>
             </ol>
           </div>
@@ -55,7 +71,7 @@
         <main role="main">
           <%= render @view_module, @view_template, assigns %>
         </main>
-      </div>      
+      </div>
     </div>
 
     <script>window.userToken = "<%= assigns[:user_token] %>"</script>

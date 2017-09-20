@@ -1,19 +1,34 @@
-<h2>Show feed</h2>
-
-<ul>
-
-  <li>
-    <strong>Url:</strong>
-    <%= @feed.url %>
-  </li>
-
-
-  <li>
-    <strong>Slug:</strong>
-    <%= @feed.slug %>
-  </li>
-
-</ul>
-
-<%= link "Edit", to: feed_path(@conn, :edit, @feed) %>
-<%= link "Back", to: feed_path(@conn, :index) %>
+<div class="row">
+  <div class="feed-info-container col-md-3">
+    <h2>Show feed</h2>
+    <ul class="list-group">
+      <li class="list-group-item">
+        <strong>Url:</strong>
+        <%= @feed.url %>
+      </li>
+      <li class="list-group-item">
+        <strong>Slug:</strong>
+        <%= @feed.slug %>
+      </li>
+    </ul>
+  </div>
+  <div class="feed-item-container col-md-3">
+    <h2>Latest entrys</h2>
+    <ul class="feed-item-list list-group">
+      <%= for inner <- @feed.latest_feed_item do %>
+        <li class="feed-entry list-group-item" data-feedLink="<%= inner.link %>">
+          <a class="feed-title-link" href="<%= inner.link %>" target="_blank">
+            <%= inner.title %> - <%= inner.pubDate %>
+          </a><br />
+          <%= inner.description %>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-6 text-center">
+    <%= link "Back", to: feed_path(@conn, :index), class: "btn btn-danger" %>
+  </div>
+  <div class="col-md-3"></div>
+</div>

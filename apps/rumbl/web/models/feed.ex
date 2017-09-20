@@ -1,7 +1,7 @@
 defmodule Rumbl.Feed do
   use Rumbl.Web, :model
   require Logger
-  #@primary_key {:id, Rumbl.Permalink, autogenerate: true}
+  @primary_key {:id, Rumbl.Permalink, autogenerate: true}
 
   schema "feeds" do
     field :url, :string

@@ -1,28 +1,29 @@
-<h2>User videos</h2>
-
-<table class="table">
-  <thead>
-    <tr>
-      <th>User</th>
-      <th>Url</th>
-      <th>Title</th>
-      <th>Description</th>
-
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-<%= for video <- @videos do %>
-    <tr>
-      <td><%= video.user_id %></td>
-      <td><%= video.url %></td>
-      <td><%= video.title %></td>
-      <td><%= video.description %></td>
-
-      <td class="text-right">
-        <%= link "Show", to: watch_path(@conn, :show, video), class: "btn btn-default btn-xs" %>
-      </td>
-    </tr>
-<% end %>
-  </tbody>
-</table>
+<h2 class="text-center">My Videos</h2>
+<div class="col-md-2"></div>
+<div class="col-md-8">
+  <table class="table table-hove">
+    <thead>
+      <tr>
+        <th>User</th>
+        <th>Url</th>
+        <th>Title</th>
+        <th>Description</th>
+        <th class="text-right"><%= link "Add video", to: video_path(@conn, :new), class: "btn btn-info" %></th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= for video <- @videos do %>
+      <tr>
+        <td><%= video.user_id %></td>
+        <td><%= video.url %></td>
+        <td><%= video.title %></td>
+        <td><%= video.description %></td>
+        <td class="text-right">
+          <%= link "Show", to: watch_path(@conn, :show, video), class: "btn btn-default btn-xs" %>
+        </td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+<div class="col-md-2"></div>

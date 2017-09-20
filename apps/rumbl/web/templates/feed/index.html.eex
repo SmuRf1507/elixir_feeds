@@ -1,27 +1,26 @@
-<h2>Listing feeds</h2>
-
-<table class="table">
-  <thead>
-    <tr>
-      <th>Url</th>
-      <th>Slug</th>
-
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-<%= for feed <- @feeds do %>
-    <tr>
-      <td><%= feed.url %></td>
-      <td><%= feed.slug %></td>
-
-      <td class="text-right">
-        <%= link "Show", to: feed_path(@conn, :show, feed), class: "btn btn-default btn-xs" %>
-        <%= link "Delete", to: feed_path(@conn, :delete, feed), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %>
-      </td>
-    </tr>
-<% end %>
-  </tbody>
-</table>
-
-<%= link "New feed", to: feed_path(@conn, :new) %>
+<h2 class="text-center">My Feeds</h2>
+<div class="col-md-2"></div>
+<div class="col-md-8">
+  <table class="table table-hove">
+    <thead>
+      <tr>
+        <th>Url</th>
+        <th>Slug</th>
+        <th class="text-right"><%= link "Add Feed", to: feed_path(@conn, :new), class: "btn btn-info" %></th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= for feed <- @feeds do %>
+      <tr>
+        <td><%= feed.url %></td>
+        <td><%= feed.slug %></td>
+        <td class="text-right">
+          <%= link "Show", to: feed_path(@conn, :show, feed), class: "btn btn-default btn-xs" %>
+          <%= link "X", to: feed_path(@conn, :delete, feed), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %>
+        </td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+<div class="col-md-2"></div>
