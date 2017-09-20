@@ -21,10 +21,10 @@
 
 <h2>Listing XML</h2>
 <div id="feed-collection-container">
-  <%= for xml <- @items do %>
+  <%= for feed <- @feeds do %>
     <div class="feed-container">
-      <ul class="feed-list" data-feedId="<%= xml.id %>">
-        <%= for inner <- xml.items do %>
+      <ul class="feed-list" data-feedId="<%= feed.id %>">
+        <%= for inner <- feed.latest_feed_item do %>
           <li class="feed-entry" data-feedLink="<%= inner.link %>">
             <a class="feed-title-link" href="<%= inner.link %>" target="_blank">
               <%= inner.title %> - <%= inner.pubDate %>

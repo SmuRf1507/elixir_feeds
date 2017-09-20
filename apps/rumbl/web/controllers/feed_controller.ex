@@ -17,10 +17,11 @@ defmodule Rumbl.FeedController do
   end
 
   def list(conn, _params, user) do
-    feeds = get_user_feeds(user)
+    u = get_user_feed_items(user)
     #Logger.debug "Var user: #{inspect(curuser)}"
-    xml = RssGrabber.getXMLbatch(create_url_list(feeds, []))
-    render(conn, "list.html", items: xml, feeds: feeds)
+    #xml = RssGrabber.getXMLbatch(create_url_list(feeds, []))
+
+    render(conn, "list.html", feeds: u.feeds)
   end
 
   def new(conn, _params, user) do
@@ -167,6 +168,11 @@ defmodule Rumbl.FeedController do
   defp create_and_save_posts([], feed, i) do
     # after all changesets are created, save the list
       {:ok}
+  end
+
+  
+  defp get_user_feed_items(user) do
+    user |> Repo.preload([{:feeds, :latest_feed_item}])
   end
 
 end

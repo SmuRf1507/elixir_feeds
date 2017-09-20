@@ -27,10 +27,6 @@ defmodule Rumbl.User do
       |> put_pass_hash()
   end
 
-  def update_feed_changeset(user, feed) do
-    #user
-    #|> cast(params)
-  end
 
   defp put_pass_hash(changeset) do
     case changeset do
