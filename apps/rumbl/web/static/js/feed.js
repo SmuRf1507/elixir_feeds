@@ -26,6 +26,7 @@ let Feed = {
 
       feedChannel.on("new_post", post => {
         console.log("New Post:", post)
+        this.renderNewPost(feed, post)
       })
 
       feedChannel.join()
@@ -42,22 +43,30 @@ let Feed = {
     return div.innerHTML
   },
 
-  renderNewPost(postContainer, {url, link, title, description, pubDate}){
-    let template = document.createElement("li")
-
-    template.innerHTML = `
-    <a href="${this.esc(link)}" target="_blank">
+  renderNewPost(postContainer, {link, title, description, pubDate}){
+    //let template = document.createElement("div")
+    let template = $("<li>").addClass("feed-entry list-group-item col-md-4").data("feedlink", link)
+    let inner_html = `
+    <a href="${this.esc(link)}" target="_blank" class="feed-title-link">
       <b>${this.esc(title)}</b> - ${this.esc(pubDate)}
     </a><br />
     ${this.esc(description)}
     `
+    template.html(inner_html)
     // prepend new item to feed list
-    postContainer.insertBefore(template, postContainer.childNodes[0])
+    $(postContainer).prepend(template)
 
     // Remove last item from list
-    postContainer.removeChild(postContainer.childNodes[postContainer.childNodes.length - 1])
+    $(postContainer).find("li").last().remove()
 
     // TODO Visually notify the User of the Update
+    $(postContainer).addClass("notify-active")
+    let interval = setInterval(function(){
+      $(postContainer).removeClass("notify-active")
+      clearInterval(interval)
+      return
+    }, 6000)
+    console.log("New Feed Update Successfull!")
   }
 }
 export default Feed

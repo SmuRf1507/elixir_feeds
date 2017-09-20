@@ -26,7 +26,7 @@ defmodule RssGrabber.FeedServer do
 
   # Check for new feed on url
   def handle_info(:check_for_update, {feed_url, link, feed_id, newfeed}) do
-    feed = RssGrabber.getXML(feed_url, [limit: 1])
+    feed = RssGrabber.getXML({feed_id, feed_url}, [limit: 1])
     item = List.first(feed.items)
 
     Process.send_after(self(), :check_for_update, 3000)

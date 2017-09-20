@@ -36,11 +36,10 @@ defmodule RssGrabber.FeedChannel do
   def broadcast_new_post(post) do
     IO.puts "### Broadcast new Post #{post.link}"
     payload = %{
-      "url" => post.url,
-      "link" => post.link,
-      "title" => post.title,
-      "description" => post.description,
-      "pubDate" => post.pubdate
+      "link" =>  to_string(post.link),
+      "title" =>  to_string(post.title),
+      "description" =>  to_string(post.description),
+      "pubDate" => to_string(post.pubDate)
     }
 
     Rumbl.Endpoint.broadcast("feeds:#{post.id}", "new_post", payload)

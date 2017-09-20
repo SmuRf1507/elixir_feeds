@@ -11,19 +11,19 @@
         <div class="col-md-4"></div>
       </div>
 
-      <div class="feed-item-container row">
-        <div class="feed-list row list-group  row-eq-height" data-feedId="<%= feed.id %>">
-          <div class="col-md-1"></div>
+      <div class="feed-item-container">
+        <div class="col-md-1"></div>
+        <ul class="feed-list row list-group  row-eq-height" data-feedId="<%= feed.id %>">
           <%= for inner <- feed.latest_feed_item do %>
-            <div class="feed-entry list-group-item col-md-4" data-feedLink="<%= inner.link %>">
+            <li class="feed-entry list-group-item col-md-4" data-feedLink="<%= inner.link %>">
               <a class="feed-title-link" href="<%= inner.link %>" target="_blank">
                 <%= inner.title %> - <%= inner.pubDate %>
               </a><br />
               <%= inner.description %>
-            </div>
+            </li>
           <% end %>
-          <div class="col-md-1"></div>
-        </div>
+        </ul>
+        <div class="col-md-1"></div>
       </div>
     </div>
   <% end %>
