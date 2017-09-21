@@ -11,11 +11,13 @@ defmodule Rumbl.FeedController do
     apply(__MODULE__, action_name(conn), [conn, conn.params, conn.assigns.current_user])
   end
 
+  # Manage Feeds Page
   def index(conn, _params, user) do
     feeds = get_user_feeds(user)
     render(conn, "index.html", feeds: feeds)
   end
 
+  # Feeds Page
   def list(conn, _params, user) do
     # get the users accociated feeds and their items
     u = get_user_feed_items(user)
@@ -23,11 +25,19 @@ defmodule Rumbl.FeedController do
     render(conn, "list.html", feeds: u.feeds)
   end
 
+  # New Feed Page
   def new(conn, _params, user) do
     changeset = Feed.changeset(%Feed{})
     render(conn, "new.html", changeset: changeset)
   end
 
+  # Feed Page
+  def show(conn, %{"id" => id}, user) do
+    feed = Repo.get!(Feed, id) |> Repo.preload(:latest_feed_item)
+    render(conn, "show.html", feed: feed)
+  end
+
+  # User creates a new Feed, if feed already exsists - Only the association is build
   def create(conn, %{"feed" => feed_params}, user) do
     # Get User record and preload feeds
     u = Repo.get(User, user.id) |> Repo.preload(:feeds)
@@ -50,8 +60,7 @@ defmodule Rumbl.FeedController do
       # check if feed returns valid results
       case get_latest_posts(feed_changeset.changes.url, 3) do
         {:ok, item_list} ->
-          # Received valid result, create changeset for new feed
-
+          # Received valid result
           # Insert new feet into db
           case Repo.insert(feed_changeset) do
             {:ok, feed} ->
@@ -64,24 +73,17 @@ defmodule Rumbl.FeedController do
                 {:error} ->
                   render(conn, "new.html", changeset: feed_changeset)
               end
+            # Display Error
             {:error, feed_changeset} ->
               render(conn, "new.html", changeset: feed_changeset)
           end
       end
-
     end
   end
 
-  def show(conn, %{"id" => id}, user) do
-    #id = get_id_from_slug(i)
-    #id = String.to_integer(id)
-    feed = Repo.get!(Feed, id) |> Repo.preload(:latest_feed_item)
-    render(conn, "show.html", feed: feed)
-  end
-
+  # When a User deletes a Feed, only the association is deleted, not the feed itself
   def delete(conn, %{"id" => id}, user) do
-    #Logger.debug "### DELETE: #{inspect(id)}"
-    # cast id to integer
+    # Cast into ID from Permalink
     {:ok, feed_id} = P.cast(id)
 
     # query and delete the associative record for the user feed
@@ -132,42 +134,42 @@ defmodule Rumbl.FeedController do
 
   # Get the [limit] amount of posts for a given feed, return found results or nil
   defp get_latest_posts(feed_url, limit) do
-    feed = RssGrabber.getXML({0, feed_url}, [limit: limit])
-    Logger.debug "### Feed: #{inspect(feed_url)}"
-    case feed.items do
-      [h|t] ->
+    #Logger.debug "### Feed: #{inspect(feed_url)}"
+    case RssGrabber.getXML({0, feed_url}, [limit: limit]) do
+      {:ok, feed} ->
+        # return only items
         {:ok, feed.items}
-      _ ->
-        {:error, feed}
+      {:error, reason} ->
+        # return error
+        {:error, reason}
     end
   end
 
   # Recursive function to list all item changesets for creation
   defp create_and_save_posts([head | tail], feed, i \\ 1) do
     item = %{
-      link: to_string(head.link),
-      title: to_string(head.title),
-      description: to_string(head.description),
-      pubDate: to_string(head.pubDate),
+      link: head.link,
+      title: head.title,
+      description: head.description,
+      pubDate: head.pubDate,
       sort_order: to_string(i)
     }
 
+    # Build association with feed on item struct and insert item
     feed_item = Ecto.build_assoc(feed, :latest_feed_item, item)
     Repo.insert!(feed_item)
 
-
-    #Logger.debug("### Changeset Debug: #{inspect(params["feed"])}")
-    #item_changeset = LatestFeedItem.changeset(%LatestFeedItem{}, Map.put(item, "feed", post))
-
+    # Recursion to insert all remaining
     create_and_save_posts(tail, feed, i + 1)
   end
 
   # End recursion, save all items
   defp create_and_save_posts([], feed, i) do
     # after all changesets are created, save the list
-      {:ok}
+    {:ok}
   end
 
+  # Update the User-Feed association
   defp save_new_user_feed_assoc(user, feed) do
     user_changeset = user
                   |> Ecto.Changeset.change
@@ -176,15 +178,16 @@ defmodule Rumbl.FeedController do
     Repo.update(user_changeset)
   end
 
+  # Delete all Feeds, only for testing purposes.. only works when all associations are gone
+  def delete_all(struct_list) do
+    for struct <- struct_list do
+      Repo.delete(struct)
+    end
+  end
 
+  # preload the users feeds
   defp get_user_feed_items(user) do
     user |> Repo.preload([{:feeds, :latest_feed_item}])
-  end
-
-  defp get_id_from_slug(slug) do
-    s = to_string(slug)
-    "" <> id <> "-" <> rest = s
-    String.to_integer(id)
-  end
+  end  
 
 end

@@ -40,11 +40,7 @@ defmodule Rumbl.Feed do
   end
 
   # delete all given feeds, only used for testing !
-  def delete_all(struct_list) do
-    for struct <- struct_list do
-      Repo.delete(struct)
-    end
-  end
+  
 
   defp slugify_url(changeset) do
     url = get_change(changeset, :url)

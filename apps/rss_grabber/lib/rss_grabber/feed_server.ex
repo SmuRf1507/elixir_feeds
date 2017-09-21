@@ -29,8 +29,6 @@ defmodule RssGrabber.FeedServer do
     feed = RssGrabber.getXML({feed_id, feed_url}, [limit: 1])
     item = List.first(feed.items)
 
-    Process.send_after(self(), :check_for_update, 3000)
-
     new_link = to_string(item.link)
     if(to_string(link) == new_link) do
       # no new entry
@@ -39,9 +37,14 @@ defmodule RssGrabber.FeedServer do
     else
       # notify of new entry for feed
       IO.puts "### Feed Server: New feed for #{feed_url}"
-      IO.puts "### Feed Server: New feed link #{item.link}"
 
-      RssGrabber.FeedChannel.broadcast_new_post(%{id: feed.id, link: new_link, title: item.title, description: item.description, pubDate: item.pubDate})
+      # Broadcast the new items via the FeedChannel
+      %{id: feed.id, link: new_link, title: item.title, description: item.description, pubDate: item.pubDate}
+      |> RssGrabber.FeedChannel.broadcast_new_post()
+
+      # Start Process again after it's done
+      Process.send_after(self(), :check_for_update, 3000)
+
       # update process state to new feed entry
       {:noreply, {feed_url, new_link, feed_id, item}}
     end

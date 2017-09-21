@@ -39,6 +39,7 @@ defmodule RssGrabber.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [{:sweet_xml, "~> 0.5.0"},
-     {:timex, "~> 3.0"}]
+     {:timex, "~> 3.0"},
+     {:html_sanitize_ex, "~> 1.3.0-rc3"}]
   end
 end

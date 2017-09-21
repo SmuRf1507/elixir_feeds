@@ -18,9 +18,7 @@
               <a class="feed-title-link" href="<%= inner.link %>" target="_blank">
                 <%= inner.title %> - <%= inner.pubDate %>
               </a><br />
-              <p>
-                <%= inner.description %>
-              </p>
+              <%= raw(inner.description) %>              
             </li>
           <% end %>
         </ul>
