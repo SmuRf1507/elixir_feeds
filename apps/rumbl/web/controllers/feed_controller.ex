@@ -45,11 +45,13 @@ defmodule Rumbl.FeedController do
           render(conn, "new.html", changeset: changeset)
       end
     else
-      # Feed not on record, check if feed returns valid results
-      case get_latest_posts(feed_params["url"], 3) do
+      # Feed not on record, create changeset for new feed
+      feed_changeset = Feed.creation_changeset(%Feed{}, Map.put(feed_params, "user", u))
+      # check if feed returns valid results
+      case get_latest_posts(feed_changeset.changes.url, 3) do
         {:ok, item_list} ->
           # Received valid result, create changeset for new feed
-          feed_changeset = Feed.creation_changeset(%Feed{}, Map.put(feed_params, "user", u))
+
           # Insert new feet into db
           case Repo.insert(feed_changeset) do
             {:ok, feed} ->
@@ -131,7 +133,7 @@ defmodule Rumbl.FeedController do
   # Get the [limit] amount of posts for a given feed, return found results or nil
   defp get_latest_posts(feed_url, limit) do
     feed = RssGrabber.getXML({0, feed_url}, [limit: limit])
-    Logger.debug "### Feed: #{inspect(feed)}"
+    Logger.debug "### Feed: #{inspect(feed_url)}"
     case feed.items do
       [h|t] ->
         {:ok, feed.items}

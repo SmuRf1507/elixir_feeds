@@ -4,16 +4,16 @@
   <table class="table table-hove">
     <thead>
       <tr>
+        <th>Name</th>
         <th>Url</th>
-        <th>Slug</th>
         <th class="text-right"><%= link "Add Feed", to: feed_path(@conn, :new), class: "btn btn-info" %></th>
       </tr>
     </thead>
     <tbody>
       <%= for feed <- @feeds do %>
       <tr>
+        <td><%= feed.account_name %></td>
         <td><%= feed.url %></td>
-        <td><%= feed.slug %></td>
         <td class="text-right">
           <%= link "Show", to: feed_path(@conn, :show, feed), class: "btn btn-default btn-xs" %>
           <%= link "X", to: feed_path(@conn, :delete, feed), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %>
